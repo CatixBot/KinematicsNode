@@ -8,8 +8,25 @@
 #include "servo/ServoPublisher.h"
 
 #include <cmath>
+#include <catix_messages/ServoState.h>
 
 //---------------------------------------------------------------------------
+
+#define NUMBER_OF_SERVOS 8
+
+//---------------------------------------------------------------------------
+
+std::vector<std::shared_ptr<servo::IServo>> makeServos(size_t numberOfServos)
+{
+    std::vector<std::shared_ptr<servo::IServo>> servos;
+
+    for (size_t servoIndex = 0; servoIndex < numberOfServos; ++servoIndex)
+    {
+        servos.emplace_back(std::make_shared<servo::ServoPublisher>(servoIndex));
+    }
+
+    return servos;
+}
 
 std::vector<std::shared_ptr<limb::ILimb2Dof>> makeLegs2Dof(
     const std::vector<std::shared_ptr<servo::IServo>>& servos)
@@ -93,33 +110,17 @@ std::unique_ptr<platform::IPlatform> makePlatform8Dof(const std::vector<std::sha
 
 CatixKinematics::CatixKinematics()
 {
+    this->servos = makeServos(NUMBER_OF_SERVOS);
+    publisherServo = node.advertise<catix_messages::ServoState>("Catix/Servos", 1);
+    ROS_INFO("Servos publisher ready...");
+
     this->legs = makeLegs2Dof(this->servos);
-    subscriberLeg = node.subscribe("Catix/Leg2Dof", 100, &CatixKinematics::listenerLegState, this);
+    subscriberLeg = node.subscribe("Catix/Leg2Dof", 1, &CatixKinematics::listenerLegState, this);
     ROS_INFO("2DOF legs listener is ready...");
  
     this->platform = makePlatform8Dof(this->legs);
-    subscriberPlatform = node.subscribe("Catix/Platform8Dof", 100, &CatixKinematics::listenerPlatformState, this);
+    subscriberPlatform = node.subscribe("Catix/Platform8Dof", 1, &CatixKinematics::listenerPlatformState, this);
     ROS_INFO("8DOF platform listener is ready...");
-}
-
-void CatixKinematics::setPlatformSpeedCallback(std::function<bool(double, double)> platformSpeedCallback)
-{
-
-}
-
-void CatixKinematics::setLegPositionCallback(std::function<bool(size_t, double, double)> legPositionCallback)
-{
-
-}
-
-void CatixKinematics::setServoAngle(size_t servoIndex, double servoAngle)
-{
-
-}
-
-void CatixKinematics::setSignalingChannelStrength(size_t signalingChannelIndex, double signalingChannelStrength)
-{
-
 }
 
 void CatixKinematics::listenerLegState(const catix_messages::TwoDofLegStateConstPtr &legState)

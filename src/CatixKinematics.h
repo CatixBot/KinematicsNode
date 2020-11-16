@@ -16,13 +16,6 @@ class CatixKinematics
     public:
         CatixKinematics();
 
-    public:
-        void setPlatformSpeedCallback(std::function<bool(double, double)> platformSpeedCallback);
-        void setLegPositionCallback(std::function<bool(size_t, double, double)> legPositionCallback);
-
-        void setServoAngle(size_t servoIndex, double servoAngle);
-        void setSignalingChannelStrength(size_t signalingChannelIndex, double signalingChannelStrength);
-
     private:
         void listenerPlatformState(const catix_messages::EightDofPlatformStateConstPtr &rPlatformState);
         void listenerLegState(const catix_messages::TwoDofLegStateConstPtr &rLegState);
@@ -31,6 +24,7 @@ class CatixKinematics
         ros::NodeHandle node;
         ros::Subscriber subscriberPlatform;
         ros::Subscriber subscriberLeg;
+        ros::Publisher publisherServo;
 
     private:
         std::vector<std::shared_ptr<servo::IServo>> servos;
