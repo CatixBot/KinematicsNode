@@ -121,6 +121,18 @@ CatixKinematics::CatixKinematics()
     this->platform = makePlatform8Dof(this->legs);
     subscriberPlatform = node.subscribe("Catix/Platform8Dof", 1, &CatixKinematics::listenerPlatformState, this);
     ROS_INFO("8DOF platform listener is ready...");
+
+    QObject::connect(&this->window, &SimulationWindow::onServoAngle, [this](size_t servoIndex, double servoAngle) 
+    {
+        catix_messages::ServoState servoStateMessage;
+        servoStateMessage.servo_index = static_cast<uint8_t>(servoIndex);
+        servoStateMessage.rotate_angle = servoAngle;
+
+        this->publisherServo.publish(servoStateMessage);
+        ROS_INFO("Servo %d: [%frad]", servoIndex, servoAngle);
+    });
+
+    window.show();
 }
 
 void CatixKinematics::listenerLegState(const catix_messages::TwoDofLegStateConstPtr &legState)
@@ -155,12 +167,4 @@ void CatixKinematics::listenerPlatformState(const catix_messages::EightDofPlatfo
 
     platform->setSpeed(moveForwardSpeed, rotateClockwiseSpeed);
     ROS_INFO("Platform: [%fm/s; %frad/s]",  moveForwardSpeed, rotateClockwiseSpeed);
-}
-
-int main(int argc, char **argv)
-{
-    ros::init(argc, argv, "CatixKinematics");
-
-    CatixKinematics CatixKinematics;
-    ros::spin();
 }

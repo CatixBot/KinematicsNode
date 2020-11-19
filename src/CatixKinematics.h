@@ -1,5 +1,6 @@
 #pragma once
 
+#include "SimulationWindow.h"
 #include "servo/ServoInterface.h"
 #include "limb/Limb2DofInterface.h"
 #include "platform/PlatformInterface.h"
@@ -30,4 +31,6 @@ class CatixKinematics
         std::vector<std::shared_ptr<servo::IServo>> servos;
         std::vector<std::shared_ptr<limb::ILimb2Dof>> legs;
         std::unique_ptr<platform::IPlatform> platform;
+
+        SimulationWindow window;
 };
