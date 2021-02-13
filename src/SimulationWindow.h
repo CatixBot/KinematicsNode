@@ -20,5 +20,12 @@ signals:
     void onPlatformSpeed(double moveForwardSpeed, double rotateClockwiseSpeed);
 
 private:
+    void connectServoGroup();
+    void connectLegGroup();
+    void connectPlatformGroup();
+
+    void notifySelectedLegs(double radialCoordinate, double angularCoordinate);
+
+private:
     Ui::SimulationWindow *ui;
 };

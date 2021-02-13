@@ -1,15 +1,20 @@
 #include "servo/ServoPublisher.h"
 
-#include <ros/ros.h>
+#include <catix_messages/ServoState.h>
 
-servo::ServoPublisher::ServoPublisher(size_t servoIndex)
+servo::ServoPublisher::ServoPublisher(size_t servoIndex, ros::NodeHandle& node)
     : servoIndex(servoIndex)
+    , publisherServoState(node.advertise<catix_messages::ServoState>("Catix/Servo", 1))
 {
 }
 
-bool servo::ServoPublisher::setAngle(double angleRadians)
+bool servo::ServoPublisher::setAngle(double servoAngle)
 {
-    ROS_INFO("Servo %d: %frad", this->servoIndex, angleRadians);
-
+    catix_messages::ServoState servoStateMessage;
+    servoStateMessage.servo_index = static_cast<uint8_t>(this->servoIndex);
+    servoStateMessage.rotate_angle = servoAngle;
+    this->publisherServoState.publish(servoStateMessage);
+    
+    ROS_INFO("Servo %d: [%frad]", this->servoIndex, servoAngle);
     return true;
 }

@@ -9,12 +9,13 @@ namespace limb
     class Leg2Dof : public ILimb2Dof
     {
     public:
-        Leg2Dof(limb::LimbSegment lowerSegment, limb::LimbSegment upperSegment);
+        Leg2Dof(size_t legIndex, limb::LimbSegment lowerSegment, limb::LimbSegment upperSegment);
 
     public:
         bool setPosition(geometry::PolarCoordinates polarCoordinates) override;
 
     private:
+        size_t legIndex;
         limb::LimbSegment lowerSegment;
         limb::LimbSegment upperSegment;
     };

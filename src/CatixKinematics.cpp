@@ -16,13 +16,13 @@
 
 //---------------------------------------------------------------------------
 
-std::vector<std::shared_ptr<servo::IServo>> makeServos(size_t numberOfServos)
+std::vector<std::shared_ptr<servo::IServo>> makeServos(size_t numberOfServos, ros::NodeHandle &node)
 {
     std::vector<std::shared_ptr<servo::IServo>> servos;
 
     for (size_t servoIndex = 0; servoIndex < numberOfServos; ++servoIndex)
     {
-        servos.emplace_back(std::make_shared<servo::ServoPublisher>(servoIndex));
+        servos.emplace_back(std::make_shared<servo::ServoPublisher>(servoIndex, node));
     }
 
     return servos;
@@ -46,40 +46,44 @@ std::vector<std::shared_ptr<limb::ILimb2Dof>> makeLegs2Dof(
     const double LOWER_SEGMENT_LENGTH_METERS = 0.060;
     const double UPPER_SEGMENT_LENGTH_METERS = 0.049;
 
+    size_t legIndex = 0;
     limb::LimbSegment frontLeftLowerSegment;
     frontLeftLowerSegment.jointServo = servos[0];
     frontLeftLowerSegment.linkLength = LOWER_SEGMENT_LENGTH_METERS;
     limb::LimbSegment frontLeftUpperSegment;
     frontLeftUpperSegment.jointServo = servos[1];
     frontLeftUpperSegment.linkLength = UPPER_SEGMENT_LENGTH_METERS;
-    auto frontLeftLeg = std::make_shared<limb::Leg2Dof>(frontLeftLowerSegment, frontLeftUpperSegment);
+    auto frontLeftLeg = std::make_shared<limb::Leg2Dof>(legIndex, frontLeftLowerSegment, frontLeftUpperSegment);
     legs.push_back(frontLeftLeg);
-
+    
+    legIndex = 1;
     limb::LimbSegment frontRightLowerSegment;
     frontRightLowerSegment.jointServo = servos[2];
     frontRightLowerSegment.linkLength = LOWER_SEGMENT_LENGTH_METERS;
     limb::LimbSegment frontRightUpperSegment;
     frontRightUpperSegment.jointServo = servos[3];
     frontRightUpperSegment.linkLength = UPPER_SEGMENT_LENGTH_METERS;
-    auto frontRightLeg = std::make_shared<limb::Leg2Dof>(frontRightLowerSegment, frontRightUpperSegment);
+    auto frontRightLeg = std::make_shared<limb::Leg2Dof>(legIndex, frontRightLowerSegment, frontRightUpperSegment);
     legs.push_back(frontRightLeg);
 
+    legIndex = 2;
     limb::LimbSegment rearRightLowerSegment;
     rearRightLowerSegment.jointServo = servos[4];
     rearRightLowerSegment.linkLength = LOWER_SEGMENT_LENGTH_METERS;
     limb::LimbSegment rearRightUpperSegment;
     rearRightUpperSegment.jointServo = servos[5];
     rearRightUpperSegment.linkLength = UPPER_SEGMENT_LENGTH_METERS;
-    auto rearRightLeg = std::make_shared<limb::Leg2Dof>(rearRightLowerSegment, rearRightUpperSegment);
+    auto rearRightLeg = std::make_shared<limb::Leg2Dof>(legIndex, rearRightLowerSegment, rearRightUpperSegment);
     legs.push_back(rearRightLeg);
 
+    legIndex = 3;
     limb::LimbSegment rearLeftLowerSegment;
     rearLeftLowerSegment.jointServo = servos[6];
     rearLeftLowerSegment.linkLength = LOWER_SEGMENT_LENGTH_METERS;
     limb::LimbSegment rearLeftUpperSegment;
     rearLeftUpperSegment.jointServo = servos[7];
     rearLeftUpperSegment.linkLength = UPPER_SEGMENT_LENGTH_METERS;
-    auto rearLeftLeg = std::make_shared<limb::Leg2Dof>(rearLeftLowerSegment, rearLeftUpperSegment);
+    auto rearLeftLeg = std::make_shared<limb::Leg2Dof>(legIndex, rearLeftLowerSegment, rearLeftUpperSegment);
     legs.push_back(rearLeftLeg);
 
     return legs;
@@ -110,26 +114,28 @@ std::unique_ptr<platform::IPlatform> makePlatform8Dof(const std::vector<std::sha
 
 CatixKinematics::CatixKinematics()
 {
-    this->servos = makeServos(NUMBER_OF_SERVOS);
-    publisherServo = node.advertise<catix_messages::ServoState>("Catix/Servos", 1);
-    ROS_INFO("Servos publisher ready...");
+    ROS_INFO("Create servo publishers");
+    this->servos = makeServos(NUMBER_OF_SERVOS, this->node);
 
+    ROS_INFO("Create 2DOF leg subscribers");
     this->legs = makeLegs2Dof(this->servos);
     subscriberLeg = node.subscribe("Catix/Leg2Dof", 1, &CatixKinematics::listenerLegState, this);
-    ROS_INFO("2DOF legs listener is ready...");
- 
+
+    ROS_INFO("Create 8DOF platform subscribers");
     this->platform = makePlatform8Dof(this->legs);
     subscriberPlatform = node.subscribe("Catix/Platform8Dof", 1, &CatixKinematics::listenerPlatformState, this);
-    ROS_INFO("8DOF platform listener is ready...");
 
     QObject::connect(&this->window, &SimulationWindow::onServoAngle, [this](size_t servoIndex, double servoAngle) 
     {
-        catix_messages::ServoState servoStateMessage;
-        servoStateMessage.servo_index = static_cast<uint8_t>(servoIndex);
-        servoStateMessage.rotate_angle = servoAngle;
+        this->servos[servoIndex]->setAngle(servoAngle);
+    });
 
-        this->publisherServo.publish(servoStateMessage);
-        ROS_INFO("Servo %d: [%frad]", servoIndex, servoAngle);
+    QObject::connect(&this->window, &SimulationWindow::onLegPosition, [this](size_t legIndex, double radialCoordinate, double angularCoordinate)
+    {
+        geometry::PolarCoordinates coordinates;
+        coordinates.radialCoordinate = radialCoordinate;
+        coordinates.angularCoordinate = angularCoordinate;
+        this->legs[legIndex]->setPosition(coordinates);
     });
 
     window.show();

@@ -6,20 +6,23 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>514</width>
-    <height>300</height>
+    <width>691</width>
+    <height>311</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>SimulationWindow</string>
   </property>
   <widget class="QGroupBox" name="servoGroupBox">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="geometry">
     <rect>
      <x>10</x>
      <y>0</y>
      <width>141</width>
-     <height>291</height>
+     <height>301</height>
     </rect>
    </property>
    <property name="title">
@@ -28,17 +31,17 @@
    <widget class="QDial" name="servoAngleDial">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>160</y>
-      <width>101</width>
-      <height>101</height>
+      <x>10</x>
+      <y>120</y>
+      <width>121</width>
+      <height>111</height>
      </rect>
     </property>
     <property name="minimum">
-     <number>-90</number>
+     <number>0</number>
     </property>
     <property name="maximum">
-     <number>90</number>
+     <number>180</number>
     </property>
     <property name="notchTarget">
      <double>10.000000000000000</double>
@@ -50,9 +53,9 @@
    <widget class="QComboBox" name="servoIndexComboBox">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>60</y>
-      <width>101</width>
+      <x>10</x>
+      <y>50</y>
+      <width>121</width>
       <height>22</height>
      </rect>
     </property>
@@ -100,7 +103,7 @@
    <widget class="QLabel" name="servoLabel">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
       <y>30</y>
       <width>91</width>
       <height>16</height>
@@ -113,14 +116,55 @@
    <widget class="QLabel" name="servoDialLabel">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>140</y>
-      <width>91</width>
+      <x>10</x>
+      <y>100</y>
+      <width>111</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>Servo Angle:</string>
+     <string>Servo Angle [deg]:</string>
+    </property>
+   </widget>
+   <widget class="QDoubleSpinBox" name="servoAngleSpinBox">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>230</y>
+      <width>62</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+    <property name="buttonSymbols">
+     <enum>QAbstractSpinBox::NoButtons</enum>
+    </property>
+    <property name="suffix">
+     <string>deg</string>
+    </property>
+    <property name="decimals">
+     <number>0</number>
+    </property>
+    <property name="maximum">
+     <double>180.000000000000000</double>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="servoEnabledCheckBox">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>270</y>
+      <width>81</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Enabled</string>
     </property>
    </widget>
   </widget>
@@ -129,8 +173,8 @@
     <rect>
      <x>160</x>
      <y>0</y>
-     <width>151</width>
-     <height>291</height>
+     <width>331</width>
+     <height>301</height>
     </rect>
    </property>
    <property name="title">
@@ -139,7 +183,7 @@
    <widget class="QLabel" name="legLabel">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
       <y>30</y>
       <width>71</width>
       <height>16</height>
@@ -149,56 +193,26 @@
      <string>Leg Index:</string>
     </property>
    </widget>
-   <widget class="QComboBox" name="legIndexComboBox">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>60</y>
-      <width>111</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <item>
-     <property name="text">
-      <string>0</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>1</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>2</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>3</string>
-     </property>
-    </item>
-   </widget>
    <widget class="QDial" name="angularCoordinateDial">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>210</y>
-      <width>91</width>
-      <height>71</height>
+      <x>170</x>
+      <y>120</y>
+      <width>121</width>
+      <height>111</height>
      </rect>
     </property>
     <property name="minimum">
-     <number>-15</number>
+     <number>0</number>
     </property>
     <property name="maximum">
-     <number>15</number>
+     <number>180</number>
     </property>
     <property name="pageStep">
      <number>1</number>
     </property>
     <property name="notchTarget">
-     <double>5.000000000000000</double>
+     <double>10.000000000000000</double>
     </property>
     <property name="notchesVisible">
      <bool>true</bool>
@@ -207,14 +221,14 @@
    <widget class="QDial" name="radialCoordinateDial">
     <property name="geometry">
      <rect>
-      <x>30</x>
+      <x>10</x>
       <y>120</y>
-      <width>91</width>
-      <height>71</height>
+      <width>131</width>
+      <height>111</height>
      </rect>
     </property>
     <property name="minimum">
-     <number>40</number>
+     <number>30</number>
     </property>
     <property name="maximum">
      <number>100</number>
@@ -223,10 +237,10 @@
      <number>1</number>
     </property>
     <property name="value">
-     <number>70</number>
+     <number>30</number>
     </property>
     <property name="notchTarget">
-     <double>5.000000000000000</double>
+     <double>10.000000000000000</double>
     </property>
     <property name="notchesVisible">
      <bool>true</bool>
@@ -235,37 +249,161 @@
    <widget class="QLabel" name="radialCoordinateLabel">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
       <y>100</y>
-      <width>121</width>
+      <width>141</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>Radial Coordinate:</string>
+     <string>Radial Coordinate [m]:</string>
     </property>
    </widget>
    <widget class="QLabel" name="angularCoordinateLabel">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>190</y>
-      <width>121</width>
+      <x>170</x>
+      <y>100</y>
+      <width>151</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
-     <string>Angular Coordinate:</string>
+     <string>Angular Coordinate [deg]:</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="zeroLegCheckBox">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>50</y>
+      <width>31</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>0</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="firstLegCheckBox">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>50</y>
+      <width>31</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>1</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="secondLegCheckBox">
+    <property name="geometry">
+     <rect>
+      <x>90</x>
+      <y>50</y>
+      <width>31</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>2</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="thirdLegCheckBox">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>50</y>
+      <width>81</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>3</string>
+    </property>
+   </widget>
+   <widget class="QDoubleSpinBox" name="radialCoordinateSpinBox">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>230</y>
+      <width>62</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+    <property name="buttonSymbols">
+     <enum>QAbstractSpinBox::NoButtons</enum>
+    </property>
+    <property name="suffix">
+     <string>m</string>
+    </property>
+    <property name="decimals">
+     <number>3</number>
+    </property>
+    <property name="maximum">
+     <double>180.000000000000000</double>
+    </property>
+    <property name="singleStep">
+     <double>0.001000000000000</double>
+    </property>
+   </widget>
+   <widget class="QDoubleSpinBox" name="angularCoordinateSpinBox">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>200</x>
+      <y>230</y>
+      <width>62</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+    <property name="buttonSymbols">
+     <enum>QAbstractSpinBox::NoButtons</enum>
+    </property>
+    <property name="suffix">
+     <string>deg</string>
+    </property>
+    <property name="decimals">
+     <number>0</number>
+    </property>
+    <property name="maximum">
+     <double>180.000000000000000</double>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="legEnabledCheckBox">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>270</y>
+      <width>81</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Enabled</string>
     </property>
    </widget>
   </widget>
   <widget class="QGroupBox" name="platformGroupBox">
    <property name="geometry">
     <rect>
-     <x>320</x>
+     <x>500</x>
      <y>0</y>
      <width>181</width>
-     <height>291</height>
+     <height>301</height>
     </rect>
    </property>
    <property name="title">
@@ -274,14 +412,14 @@
    <widget class="QRadioButton" name="forwardSpeedRadioButton">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
       <y>30</y>
-      <width>121</width>
+      <width>161</width>
       <height>20</height>
      </rect>
     </property>
     <property name="text">
-     <string>Forward Speed</string>
+     <string>Forward Speed [m/s]:</string>
     </property>
     <property name="checked">
      <bool>true</bool>
@@ -290,14 +428,14 @@
    <widget class="QRadioButton" name="rotationSpeedRadioButton">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
       <y>170</y>
-      <width>131</width>
+      <width>161</width>
       <height>20</height>
      </rect>
     </property>
     <property name="text">
-     <string>Rotation Speed:</string>
+     <string>Rotation Speed [deg/s]:</string>
     </property>
    </widget>
    <widget class="QDial" name="moveForwardDial">

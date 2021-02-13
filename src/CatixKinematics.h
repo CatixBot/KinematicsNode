@@ -25,7 +25,6 @@ class CatixKinematics
         ros::NodeHandle node;
         ros::Subscriber subscriberPlatform;
         ros::Subscriber subscriberLeg;
-        ros::Publisher publisherServo;
 
     private:
         std::vector<std::shared_ptr<servo::IServo>> servos;
