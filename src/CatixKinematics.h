@@ -23,6 +23,7 @@ class CatixKinematics
 
     private:
         ros::NodeHandle node;
+        ros::Publisher publisherAllJointsDrop;
         ros::Subscriber subscriberPlatform;
         ros::Subscriber subscriberLeg;
 

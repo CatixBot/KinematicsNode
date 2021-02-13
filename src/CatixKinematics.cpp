@@ -8,6 +8,7 @@
 #include "servo/ServoPublisher.h"
 
 #include <cmath>
+#include <std_msgs/Empty.h>
 #include <catix_messages/ServoState.h>
 
 //---------------------------------------------------------------------------
@@ -113,16 +114,26 @@ std::unique_ptr<platform::IPlatform> makePlatform8Dof(const std::vector<std::sha
 
 CatixKinematics::CatixKinematics()
 {
+    ROS_INFO("Create drop all joints publisher");
+    this->publisherAllJointsDrop = node.advertise<std_msgs::Empty>("Catix/SignalingDrop", 1);
+
     ROS_INFO("Create joint publishers");
     this->joints = makeJoints(NUMBER_OF_JOINTS, this->node);
 
-    ROS_INFO("Create 2DOF leg subscribers");
+    ROS_INFO("Create 2DOF leg subscriber");
     this->legs = makeLegs2Dof(this->joints);
     subscriberLeg = node.subscribe("Catix/Leg2Dof", 1, &CatixKinematics::listenerLegState, this);
 
-    ROS_INFO("Create 8DOF platform subscribers");
+    ROS_INFO("Create 8DOF platform subscriber");
     this->platform = makePlatform8Dof(this->legs);
     subscriberPlatform = node.subscribe("Catix/Platform8Dof", 1, &CatixKinematics::listenerPlatformState, this);
+
+    QObject::connect(&this->window, &SimulationWindow::onDropAllJoints, [this]()
+    {
+        std_msgs::Empty dropAllJointsEventMessage;
+        this->publisherAllJointsDrop.publish(dropAllJointsEventMessage);
+        ROS_INFO("Drop all joints");
+    });
 
     QObject::connect(&this->window, &SimulationWindow::onJointAngle, [this](size_t servoIndex, double servoAngle) 
     {

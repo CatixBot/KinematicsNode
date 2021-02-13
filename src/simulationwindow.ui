@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>691</width>
-    <height>311</height>
+    <height>350</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -491,6 +491,19 @@
      <bool>true</bool>
     </property>
    </widget>
+  </widget>
+  <widget class="QPushButton" name="dropAllJointsButton">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>310</y>
+     <width>671</width>
+     <height>28</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Drop All Joints</string>
+   </property>
   </widget>
  </widget>
  <resources/>

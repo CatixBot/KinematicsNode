@@ -15,6 +15,7 @@ public:
     ~SimulationWindow();
 
 signals:
+    void onDropAllJoints();
     void onJointAngle(size_t jointIndex, double jointAngle);
     void onLegPosition(size_t legIndex, double radialCoordinate, double angularCoordinate);
     void onPlatformSpeed(double moveForwardSpeed, double rotateClockwiseSpeed);

@@ -56,6 +56,18 @@ void SimulationWindow::connectJointGroup()
         const double jointAngle = convertDegreesToRadians(ui->jointAngleDial->value());
         emit onJointAngle(jointIndex, jointAngle);
     });
+
+    QObject::connect(ui->dropAllJointsButton, &QPushButton::pressed, [&]()
+    {
+        ui->jointEnabledCheckBox->setChecked(false);
+        ui->jointAngleDial->setValue(ui->jointAngleDial->minimum());
+
+        ui->legEnabledCheckBox->setChecked(false);
+        ui->radialCoordinateDial->setValue(ui->radialCoordinateDial->minimum());
+        ui->angularCoordinateDial->setValue(ui->angularCoordinateDial->minimum());
+
+        emit onDropAllJoints();
+    });
 }
 
 void SimulationWindow::connectLegGroup()
