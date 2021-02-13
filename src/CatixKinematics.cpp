@@ -12,32 +12,31 @@
 
 //---------------------------------------------------------------------------
 
-#define NUMBER_OF_SERVOS 8
+#define NUMBER_OF_JOINTS 8
 
 //---------------------------------------------------------------------------
 
-std::vector<std::shared_ptr<servo::IServo>> makeServos(size_t numberOfServos, ros::NodeHandle &node)
+std::vector<std::shared_ptr<servo::IServo>> makeJoints(size_t numberOfJoints, ros::NodeHandle &node)
 {
-    std::vector<std::shared_ptr<servo::IServo>> servos;
+    std::vector<std::shared_ptr<servo::IServo>> joints;
 
-    for (size_t servoIndex = 0; servoIndex < numberOfServos; ++servoIndex)
+    for (size_t jointIndex = 0; jointIndex < numberOfJoints; ++jointIndex)
     {
-        servos.emplace_back(std::make_shared<servo::ServoPublisher>(servoIndex, node));
+        joints.emplace_back(std::make_shared<servo::ServoPublisher>(jointIndex, node));
     }
 
-    return servos;
+    return joints;
 }
 
-std::vector<std::shared_ptr<limb::ILimb2Dof>> makeLegs2Dof(
-    const std::vector<std::shared_ptr<servo::IServo>>& servos)
+std::vector<std::shared_ptr<limb::ILimb2Dof>> makeLegs2Dof(const std::vector<std::shared_ptr<servo::IServo>>& joints)
 {
-    const size_t EXPECTED_NUMBER_OF_SERVOS = 8;
-    const size_t PROVIDED_NUMBER_OF_SERVOS = servos.size();
+    const size_t EXPECTED_NUMBER_OF_JOINTS = 8;
+    const size_t PROVIDED_NUMBER_OF_JOINTS = joints.size();
 
-    if (PROVIDED_NUMBER_OF_SERVOS != EXPECTED_NUMBER_OF_SERVOS)
+    if (PROVIDED_NUMBER_OF_JOINTS != EXPECTED_NUMBER_OF_JOINTS)
     {
-        ROS_ERROR("Legs can't be constructed as %d servos provided, but %d servos expected", 
-            PROVIDED_NUMBER_OF_SERVOS, EXPECTED_NUMBER_OF_SERVOS);
+        ROS_ERROR("Legs can't be constructed as %d joints provided, but %d joints expected", 
+            PROVIDED_NUMBER_OF_JOINTS, EXPECTED_NUMBER_OF_JOINTS);
         return {};
     }
 
@@ -48,40 +47,40 @@ std::vector<std::shared_ptr<limb::ILimb2Dof>> makeLegs2Dof(
 
     size_t legIndex = 0;
     limb::LimbSegment frontLeftLowerSegment;
-    frontLeftLowerSegment.jointServo = servos[0];
+    frontLeftLowerSegment.jointServo = joints[0];
     frontLeftLowerSegment.linkLength = LOWER_SEGMENT_LENGTH_METERS;
     limb::LimbSegment frontLeftUpperSegment;
-    frontLeftUpperSegment.jointServo = servos[1];
+    frontLeftUpperSegment.jointServo = joints[1];
     frontLeftUpperSegment.linkLength = UPPER_SEGMENT_LENGTH_METERS;
     auto frontLeftLeg = std::make_shared<limb::Leg2Dof>(legIndex, frontLeftLowerSegment, frontLeftUpperSegment);
     legs.push_back(frontLeftLeg);
     
     legIndex = 1;
     limb::LimbSegment frontRightLowerSegment;
-    frontRightLowerSegment.jointServo = servos[2];
+    frontRightLowerSegment.jointServo = joints[2];
     frontRightLowerSegment.linkLength = LOWER_SEGMENT_LENGTH_METERS;
     limb::LimbSegment frontRightUpperSegment;
-    frontRightUpperSegment.jointServo = servos[3];
+    frontRightUpperSegment.jointServo = joints[3];
     frontRightUpperSegment.linkLength = UPPER_SEGMENT_LENGTH_METERS;
     auto frontRightLeg = std::make_shared<limb::Leg2Dof>(legIndex, frontRightLowerSegment, frontRightUpperSegment);
     legs.push_back(frontRightLeg);
 
     legIndex = 2;
     limb::LimbSegment rearRightLowerSegment;
-    rearRightLowerSegment.jointServo = servos[4];
+    rearRightLowerSegment.jointServo = joints[4];
     rearRightLowerSegment.linkLength = LOWER_SEGMENT_LENGTH_METERS;
     limb::LimbSegment rearRightUpperSegment;
-    rearRightUpperSegment.jointServo = servos[5];
+    rearRightUpperSegment.jointServo = joints[5];
     rearRightUpperSegment.linkLength = UPPER_SEGMENT_LENGTH_METERS;
     auto rearRightLeg = std::make_shared<limb::Leg2Dof>(legIndex, rearRightLowerSegment, rearRightUpperSegment);
     legs.push_back(rearRightLeg);
 
     legIndex = 3;
     limb::LimbSegment rearLeftLowerSegment;
-    rearLeftLowerSegment.jointServo = servos[6];
+    rearLeftLowerSegment.jointServo = joints[6];
     rearLeftLowerSegment.linkLength = LOWER_SEGMENT_LENGTH_METERS;
     limb::LimbSegment rearLeftUpperSegment;
-    rearLeftUpperSegment.jointServo = servos[7];
+    rearLeftUpperSegment.jointServo = joints[7];
     rearLeftUpperSegment.linkLength = UPPER_SEGMENT_LENGTH_METERS;
     auto rearLeftLeg = std::make_shared<limb::Leg2Dof>(legIndex, rearLeftLowerSegment, rearLeftUpperSegment);
     legs.push_back(rearLeftLeg);
@@ -114,20 +113,20 @@ std::unique_ptr<platform::IPlatform> makePlatform8Dof(const std::vector<std::sha
 
 CatixKinematics::CatixKinematics()
 {
-    ROS_INFO("Create servo publishers");
-    this->servos = makeServos(NUMBER_OF_SERVOS, this->node);
+    ROS_INFO("Create joint publishers");
+    this->joints = makeJoints(NUMBER_OF_JOINTS, this->node);
 
     ROS_INFO("Create 2DOF leg subscribers");
-    this->legs = makeLegs2Dof(this->servos);
+    this->legs = makeLegs2Dof(this->joints);
     subscriberLeg = node.subscribe("Catix/Leg2Dof", 1, &CatixKinematics::listenerLegState, this);
 
     ROS_INFO("Create 8DOF platform subscribers");
     this->platform = makePlatform8Dof(this->legs);
     subscriberPlatform = node.subscribe("Catix/Platform8Dof", 1, &CatixKinematics::listenerPlatformState, this);
 
-    QObject::connect(&this->window, &SimulationWindow::onServoAngle, [this](size_t servoIndex, double servoAngle) 
+    QObject::connect(&this->window, &SimulationWindow::onJointAngle, [this](size_t servoIndex, double servoAngle) 
     {
-        this->servos[servoIndex]->setAngle(servoAngle);
+        this->joints[servoIndex]->setAngle(servoAngle);
     });
 
     QObject::connect(&this->window, &SimulationWindow::onLegPosition, [this](size_t legIndex, double radialCoordinate, double angularCoordinate)

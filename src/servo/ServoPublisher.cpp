@@ -15,6 +15,6 @@ bool servo::ServoPublisher::setAngle(double servoAngle)
     servoStateMessage.rotate_angle = servoAngle;
     this->publisherServoState.publish(servoStateMessage);
     
-    ROS_INFO("Servo %d: [%frad]", this->servoIndex, servoAngle);
+    ROS_INFO("Joint %d: [%frad]", this->servoIndex, servoAngle);
     return true;
 }

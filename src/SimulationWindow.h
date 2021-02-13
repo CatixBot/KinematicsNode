@@ -15,12 +15,12 @@ public:
     ~SimulationWindow();
 
 signals:
-    void onServoAngle(size_t servoIndex, double servoAngle);
+    void onJointAngle(size_t jointIndex, double jointAngle);
     void onLegPosition(size_t legIndex, double radialCoordinate, double angularCoordinate);
     void onPlatformSpeed(double moveForwardSpeed, double rotateClockwiseSpeed);
 
 private:
-    void connectServoGroup();
+    void connectJointGroup();
     void connectLegGroup();
     void connectPlatformGroup();
 

@@ -27,7 +27,7 @@ class CatixKinematics
         ros::Subscriber subscriberLeg;
 
     private:
-        std::vector<std::shared_ptr<servo::IServo>> servos;
+        std::vector<std::shared_ptr<servo::IServo>> joints;
         std::vector<std::shared_ptr<limb::ILimb2Dof>> legs;
         std::unique_ptr<platform::IPlatform> platform;
 

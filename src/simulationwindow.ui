@@ -11,9 +11,9 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>SimulationWindow</string>
+   <string>Catix Kinematics</string>
   </property>
-  <widget class="QGroupBox" name="servoGroupBox">
+  <widget class="QGroupBox" name="jointGroupBox">
    <property name="enabled">
     <bool>true</bool>
    </property>
@@ -26,9 +26,9 @@
     </rect>
    </property>
    <property name="title">
-    <string>Servo</string>
+    <string>Joint</string>
    </property>
-   <widget class="QDial" name="servoAngleDial">
+   <widget class="QDial" name="jointAngleDial">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -50,7 +50,7 @@
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QComboBox" name="servoIndexComboBox">
+   <widget class="QComboBox" name="jointIndexComboBox">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -100,7 +100,7 @@
      </property>
     </item>
    </widget>
-   <widget class="QLabel" name="servoLabel">
+   <widget class="QLabel" name="jointLabel">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -110,10 +110,10 @@
      </rect>
     </property>
     <property name="text">
-     <string>Servo Index:</string>
+     <string>Joint Index:</string>
     </property>
    </widget>
-   <widget class="QLabel" name="servoDialLabel">
+   <widget class="QLabel" name="jointDialLabel">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -123,10 +123,10 @@
      </rect>
     </property>
     <property name="text">
-     <string>Servo Angle [deg]:</string>
+     <string>Joint Angle [deg]:</string>
     </property>
    </widget>
-   <widget class="QDoubleSpinBox" name="servoAngleSpinBox">
+   <widget class="QDoubleSpinBox" name="jointAngleSpinBox">
     <property name="enabled">
      <bool>false</bool>
     </property>
@@ -154,7 +154,7 @@
      <double>180.000000000000000</double>
     </property>
    </widget>
-   <widget class="QCheckBox" name="servoEnabledCheckBox">
+   <widget class="QCheckBox" name="jointEnabledCheckBox">
     <property name="geometry">
      <rect>
       <x>10</x>

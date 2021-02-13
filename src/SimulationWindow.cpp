@@ -16,7 +16,7 @@ SimulationWindow::SimulationWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    this->connectServoGroup();
+    this->connectJointGroup();
     this->connectLegGroup();
     this->connectPlatformGroup();
 }
@@ -26,35 +26,35 @@ SimulationWindow::~SimulationWindow()
     delete ui;
 }
 
-void SimulationWindow::connectServoGroup()
+void SimulationWindow::connectJointGroup()
 {
-    QObject::connect(ui->servoAngleDial, &QDial::valueChanged, [&](int dialValue)
+    QObject::connect(ui->jointAngleDial, &QDial::valueChanged, [&](int dialValue)
     {
-        if (!ui->servoEnabledCheckBox->isChecked())
+        if (!ui->jointEnabledCheckBox->isChecked())
         {
             return;
         }
 
-        const size_t servoIndex = ui->servoIndexComboBox->currentIndex();
-        const double servoAngle = convertDegreesToRadians(dialValue);
-        emit onServoAngle(servoIndex, servoAngle);
+        const size_t jointIndex = ui->jointIndexComboBox->currentIndex();
+        const double jointAngle = convertDegreesToRadians(dialValue);
+        emit onJointAngle(jointIndex, jointAngle);
     });
 
-    QObject::connect(ui->servoAngleDial, &QDial::valueChanged, [&](int dialValue)
+    QObject::connect(ui->jointAngleDial, &QDial::valueChanged, [&](int dialValue)
     {
-        this->ui->servoAngleSpinBox->setValue(dialValue);
+        this->ui->jointAngleSpinBox->setValue(dialValue);
     });
 
-    QObject::connect(ui->servoEnabledCheckBox, &QCheckBox::toggled, [&](bool isChecked)
+    QObject::connect(ui->jointEnabledCheckBox, &QCheckBox::toggled, [&](bool isChecked)
     {
         if (!isChecked)
         {
             return;
         }
 
-        const size_t servoIndex = ui->servoIndexComboBox->currentIndex();
-        const double servoAngle = convertDegreesToRadians(ui->servoAngleDial->value());
-        emit onServoAngle(servoIndex, servoAngle);
+        const size_t jointIndex = ui->jointIndexComboBox->currentIndex();
+        const double jointAngle = convertDegreesToRadians(ui->jointAngleDial->value());
+        emit onJointAngle(jointIndex, jointAngle);
     });
 }
 
